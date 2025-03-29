@@ -1,0 +1,23 @@
+---
+# Playbook to gracefully stop MySQL Docker container and remind user to manually export data
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    # Remind the user to manually export data migration script
+    - name: Data Migration Reminder
+      debug:
+        msg: |
+          Reminder:
+          Before shutting down MySQL, manually export the database using:
+          mysqldump -u root -pRambo@123 subscribersdb subscriber > flyway/sql/Vx__Seed_subscriber_data.sql
+          (replace 'Vx' with the correct next migration version number)
+
+    # Task to stop the running MySQL Docker container named 'mysql-db'
+    - name: Stop MySQL container
+      docker_container:
+        name: mysql-db
+        state: stopped
+
+
